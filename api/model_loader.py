@@ -89,9 +89,12 @@ def load_model(model_path: str = None):
     if model_path is None:
         model_path = os.path.join(os.path.dirname(__file__), "complex_price_model_v2.pkl")
 
-    # Inject the class into the pickle loading context
+    # Inject the class into potential pickle loading contexts
     import __main__
+    import sys
     __main__.ComplexTrapModelRenamed = ComplexTrapModelRenamed
+    # Also inject into the module where load_model is called if it's different
+    sys.modules["__main__"].ComplexTrapModelRenamed = ComplexTrapModelRenamed
 
     try:
         with open(model_path, "rb") as f:

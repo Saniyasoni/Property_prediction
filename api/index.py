@@ -7,6 +7,14 @@ Endpoints:
     GET  /health         — Health check
 """
 
+import sys
+import os
+
+# Ensure the 'api' directory is in the path so local imports work on Vercel
+api_dir = os.path.dirname(os.path.abspath(__file__))
+if api_dir not in sys.path:
+    sys.path.append(api_dir)
+
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel

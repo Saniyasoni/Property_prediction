@@ -14,8 +14,16 @@ export async function compareProperties(address1, address2) {
   });
 
   if (!response.ok) {
-    const error = await response.json().catch(() => ({}));
-    throw new Error(error.detail || `API error: ${response.status}`);
+    let errorMessage = `API error: ${response.status}`;
+    try {
+      const errorData = await response.json();
+      errorMessage = errorData.detail || errorMessage;
+    } catch (e) {
+      // Not a JSON error (e.g. 500 HTML page)
+      const text = await response.text().catch(() => '');
+      if (text.includes('Internal Server Error')) errorMessage = 'Internal Server Error (Check Backend Logs)';
+    }
+    throw new Error(errorMessage);
   }
 
   return response.json();
