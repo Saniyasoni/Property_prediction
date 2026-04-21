@@ -60,17 +60,20 @@ class CompareResponse(BaseModel):
 
 # --- Endpoints ---
 @app.get("/health")
+@app.get("/api/health")
 async def health_check():
     return {"status": "ok", "model_loaded": model is not None}
 
 
 @app.get("/api/addresses")
+@app.get("/addresses")
 async def list_addresses():
     """Return all available mock property addresses."""
     return {"addresses": get_all_addresses()}
 
 
 @app.post("/api/compare", response_model=CompareResponse)
+@app.post("/compare", response_model=CompareResponse)
 async def compare_properties(request: CompareRequest):
     """
     Compare two properties by address.
