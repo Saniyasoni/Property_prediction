@@ -32,7 +32,7 @@ function FeatureRow({ icon, label, value, isWinner, isDraw }) {
   );
 }
 
-export default function ComparisonCard({ property, otherProperty, index }) {
+export default function ComparisonCard({ property, otherProperty, index, isShortlisted, onToggleShortlist }) {
   const isLowerPrice = property.predicted_price < otherProperty.predicted_price;
   const isHigherPrice = property.predicted_price > otherProperty.predicted_price;
   const animClass = index === 0 ? 'animate-slide-in-left' : 'animate-slide-in-right';
@@ -47,19 +47,34 @@ export default function ComparisonCard({ property, otherProperty, index }) {
   const areaLabel = property.property_type === 'SFH' ? 'Lot Area' : 'Building Area';
 
   return (
-    <div className={`${animClass} flex flex-col`}>
-      <div className={`glass-card overflow-hidden flex flex-col h-full ${isLowerPrice ? 'winner-highlight' : ''}`}>
+    <div className={`${animClass} flex flex-col group/card`}>
+      <div className={`glass-card overflow-hidden flex flex-col h-full relative ${isLowerPrice ? 'winner-highlight' : ''}`}>
+        {/* Shortlist Toggle */}
+        <button
+          onClick={() => onToggleShortlist(property)}
+          className={`absolute top-4 right-4 z-10 p-2.5 rounded-xl border transition-all duration-300 ${
+            isShortlisted 
+              ? 'bg-rose-500 border-rose-400 text-white shadow-lg shadow-rose-500/40' 
+              : 'bg-surface-800/80 border-surface-700 text-surface-400 hover:text-rose-400 hover:border-rose-400/50'
+          }`}
+          title={isShortlisted ? 'Remove from shortlist' : 'Add to shortlist'}
+        >
+          <svg className={`w-5 h-5 transition-transform duration-300 ${isShortlisted ? 'scale-110' : 'group-hover/card:scale-110'}`} fill={isShortlisted ? 'currentColor' : 'none'} viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+          </svg>
+        </button>
+
         <div className="px-6 pt-6 pb-4 border-b border-surface-700/40">
-          <div className="flex items-start justify-between gap-3 mb-3">
+          <div className="flex items-start gap-3 mb-3">
             <span className={property.property_type === 'SFH' ? 'badge-blue' : 'badge-amber'}>
               {property.property_type === 'SFH' ? 'Single Family Home' : 'Condominium'}
             </span>
             {isLowerPrice && <span className="badge-green">Better Value</span>}
           </div>
-          <h3 className="text-white font-semibold text-base leading-tight mb-1">
+          <h3 className="text-white font-semibold text-base leading-tight mb-1 pr-10">
             {property.address.split(',')[0]}
           </h3>
-          <p className="text-surface-400 text-sm">
+          <p className="text-surface-400 text-sm truncate">
             {property.address.split(',').slice(1).join(',').trim()}
           </p>
         </div>

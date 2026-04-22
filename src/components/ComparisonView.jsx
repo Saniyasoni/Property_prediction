@@ -1,8 +1,10 @@
 import ComparisonCard from './ComparisonCard';
 
-export default function ComparisonView({ result }) {
+export default function ComparisonView({ result, shortlist, onToggleShortlist }) {
   const { property1, property2 } = result;
   const diff = Math.abs(property1.predicted_price - property2.predicted_price);
+
+  const isShortlisted = (addr) => shortlist.some(p => p.address === addr);
 
   return (
     <div className="w-full max-w-5xl mx-auto animate-fade-in">
@@ -28,8 +30,20 @@ export default function ComparisonView({ result }) {
 
       {/* Side-by-side cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <ComparisonCard property={property1} otherProperty={property2} index={0} />
-        <ComparisonCard property={property2} otherProperty={property1} index={1} />
+        <ComparisonCard 
+          property={property1} 
+          otherProperty={property2} 
+          index={0} 
+          isShortlisted={isShortlisted(property1.address)}
+          onToggleShortlist={onToggleShortlist}
+        />
+        <ComparisonCard 
+          property={property2} 
+          otherProperty={property1} 
+          index={1} 
+          isShortlisted={isShortlisted(property2.address)}
+          onToggleShortlist={onToggleShortlist}
+        />
       </div>
     </div>
   );

@@ -3,6 +3,7 @@ import Header from './components/Header';
 import AddressInput from './components/AddressInput';
 import ComparisonView from './components/ComparisonView';
 import LoadingSpinner from './components/LoadingSpinner';
+import ShortlistSidebar from './components/ShortlistSidebar';
 import { compareProperties, fetchAddresses } from './services/api';
 
 export default function App() {
@@ -10,6 +11,15 @@ export default function App() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
   const [addresses, setAddresses] = useState([]);
+  const [shortlist, setShortlist] = useState(() => {
+    const saved = localStorage.getItem('agent-mira-shortlist');
+    return saved ? JSON.parse(saved) : [];
+  });
+
+  // Persist shortlist
+  useEffect(() => {
+    localStorage.setItem('agent-mira-shortlist', JSON.stringify(shortlist));
+  }, [shortlist]);
 
   // Fetch available addresses on mount
   useEffect(() => {
@@ -32,6 +42,26 @@ export default function App() {
       setError(err.message || 'Something went wrong. Please try again.');
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  const toggleShortlist = (property) => {
+    setShortlist(prev => {
+      const exists = prev.find(p => p.address === property.address);
+      if (exists) {
+        return prev.filter(p => p.address !== property.address);
+      }
+      return [...prev, property];
+    });
+  };
+
+  const removeFromShortlist = (address) => {
+    setShortlist(prev => prev.filter(p => p.address !== address));
+  };
+
+  const clearShortlist = () => {
+    if (window.confirm('Are you sure you want to clear all saved properties?')) {
+      setShortlist([]);
     }
   };
 
@@ -76,7 +106,6 @@ export default function App() {
                 <div>
                   <p className="text-rose-400 font-semibold text-sm">Comparison Failed</p>
                   <p className="text-surface-300 text-sm mt-1">{error}</p>
-                  <p className="text-surface-500 text-xs mt-2">Make sure the backend is running on port 8000.</p>
                 </div>
               </div>
             </div>
@@ -87,7 +116,19 @@ export default function App() {
         {isLoading && <LoadingSpinner />}
 
         {/* Results */}
-        {result && !isLoading && <ComparisonView result={result} />}
+        {result && !isLoading && (
+          <ComparisonView 
+            result={result} 
+            shortlist={shortlist} 
+            onToggleShortlist={toggleShortlist} 
+          />
+        )}
+
+        <ShortlistSidebar 
+          items={shortlist} 
+          onRemove={removeFromShortlist} 
+          onClear={clearShortlist} 
+        />
 
         {/* Footer */}
         <footer className="text-center py-8 border-t border-surface-800/50">
