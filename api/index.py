@@ -1,5 +1,5 @@
 """
-Agent Mira — Property Comparison & Price Prediction API
+Property Prediction — Property Comparison & Price Prediction API
 
 Endpoints:
     POST /api/compare    — Compare two properties by address
@@ -23,7 +23,7 @@ from property_service import get_property, get_all_addresses
 
 # --- App Setup ---
 app = FastAPI(
-    title="Agent Mira Property API",
+    title="Property Prediction API",
     description="Property comparison and price prediction service",
     version="1.0.0",
 )
@@ -116,4 +116,4 @@ async def compare_properties(request: CompareRequest):
 
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=True)
+    uvicorn.run("index:app", host="0.0.0.0", port=8000, reload=True)

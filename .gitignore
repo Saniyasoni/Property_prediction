@@ -30,3 +30,7 @@ Thumbs.db
 # Project specific files to ignore
 Project Overview/
 explanation.txt
+
+# Generation Scripts
+generate_mock_data.py
+generated_mock_data.py

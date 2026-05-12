@@ -133,7 +133,7 @@ export default function App() {
         {/* Footer */}
         <footer className="text-center py-8 border-t border-surface-800/50">
           <p className="text-surface-500 text-xs">
-            Agent Mira Property Intelligence &bull; ML-Powered Price Predictions &bull; Case Study Project
+            Property Prediction &bull; ML-Powered Price Predictions &bull; Case Study Project
           </p>
         </footer>
       </main>
